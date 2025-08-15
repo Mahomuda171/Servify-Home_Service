@@ -16,7 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from .import settings
+from django.conf.urls.static import static
+
+from Service_App import views as landing_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', landing_page.home, name='home'),
+    path('about/', landing_page.about, name='about'),
+    path('faq/', landing_page.faq, name='faq'),
+    path('service/', landing_page.service, name='service'),
+    path('login/', landing_page.login, name='login'),
+    path('signup/', landing_page.signup, name='signup'),
+
 ]
