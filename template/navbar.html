@@ -1,36 +1,103 @@
-<nav class="navbar navbar-expand-lg" style="background-color: #2c3e50;">
-  <div class="container-fluid">
-    <!-- Logo -->
-    <a class="navbar-brand fw-bold text-white" href="#">Servify</a>
+{% load static %}
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+{% static 'images/logo.png' as logo_url %}
 
-    <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
-      <!-- Menu Centered -->
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0" style="gap: 30px;">
-        <li class="nav-item">
-          <a class="nav-link text-white" href="{% url 'home' %}">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="{% url 'faq' %}">FAQ</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="{% url 'service' %}">Service</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="{% url 'about' %}">About</a>
-        </li>
-      </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navbar with Logo and Button Effects</title>
 
-      <!-- Search + Login -->
-      <form class="d-flex align-items-center">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-success me-2" type="submit">Search</button>
-        <a href="{% url 'login' %}" class="btn btn-light">Login</a>
-      </form>
+  <style>
+    /* Resize the logo to control height */
+    .brand-logo {
+      height: 50px;  /* Set a fixed height for the logo */
+      width: auto;   /* Maintain aspect ratio */
+      vertical-align: middle;  /* Align logo vertically */
+    }
+
+    /* Navbar styling */
+    .navbar {
+      background-color: #2c3e50 !important;  /* Dark navbar background */
+      padding-top: 5px;  /* Adjust top padding to control navbar height */
+      padding-bottom: 5px;  /* Adjust bottom padding to control navbar height */
+    }
+
+    /* Navbar link active state color */
+    .navbar-nav .nav-link.active {
+      color: #27ae60;  /* Green color for active links */
+    }
+
+    /* Hover and active button states */
+    .btn:hover {
+      background-color: #2ecc71;  /* Lighter green on hover */
+      border-color: #2ecc71;
+      color: white;
+    }
+
+    .btn:active {
+      background-color: #27ae60;  /* Dark green on active */
+      border-color: #27ae60;
+      color: white;
+    }
+
+    /* Optional: Adjust the search input field for better appearance */
+    .form-control {
+      border-radius: 25px;  /* Rounded search bar */
+    }
+
+    /* Active state for button (Search) */
+    .btn-success:active {
+      background-color: #27ae60;
+      border-color: #27ae60;
+      color: white;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top shadow-sm">
+    <div class="container" style="max-width: 1600px; margin: 0 auto;">  <!-- Increased max-width for professional width -->
+      <!-- Brand: icon + optional text (non-clickable) -->
+      <div class="navbar-brand d-flex align-items-center">
+        <img src="{{ logo_url }}?v=8" alt="Servify logo" class="brand-logo me-2">
+      </div>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+        aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0" style="gap: 20px;">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'faq' %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'service' %}active{% endif %}" href="{% url 'service' %}">Service</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+          </li>
+        </ul>
+
+        <!-- Search -->
+        <form class="d-flex align-items-center me-3" role="search">
+          <input class="form-control me-2 rounded-pill shadow-sm" type="search" placeholder="Search services..." aria-label="Search">
+          <button class="btn btn-success rounded-pill px-3 shadow-sm" type="submit">Search</button>
+        </form>
+
+        <!-- Auth Buttons -->
+        <div class="d-flex gap-2">
+          <a href="{% url 'login' %}" class="btn btn-outline-light rounded-pill px-3">Login</a>
+          <a href="{% url 'signup' %}" class="btn btn-success rounded-pill px-3">Sign Up</a>
+        </div>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
+</body>
+</html>
