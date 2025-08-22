@@ -1,7 +1,5 @@
 {% load static %}
 
-{% static 'images/logo.png' as logo_url %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -61,7 +59,8 @@
     <div class="container" style="max-width: 1600px; margin: 0 auto;">  <!-- Increased max-width for professional width -->
       <!-- Brand: icon + optional text (non-clickable) -->
       <div class="navbar-brand d-flex align-items-center">
-        <img src="{{ logo_url }}?v=8" alt="Servify logo" class="brand-logo me-2">
+        <!-- Logo Image -->
+        <img src="{% static 'images/logo.png' %}" alt="Servify logo" class="brand-logo me-2">
       </div>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
@@ -94,7 +93,10 @@
         <!-- Auth Buttons -->
         <div class="d-flex gap-2">
           <a href="{% url 'login' %}" class="btn btn-outline-light rounded-pill px-3">Login</a>
-          <a href="{% url 'signup' %}" class="btn btn-success rounded-pill px-3">Sign Up</a>
+          <span class="btn btn-success rounded-pill px-3 d-flex align-items-center">
+            <img src="{% static 'images/call-icon.png' %}" alt="Call Icon" style="height: 20px; margin-right: 5px;"> <!-- Call sign icon -->
+            <strong>+1 234 567 890</strong>
+          </span>
         </div>
       </div>
     </div>

@@ -13,6 +13,9 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('signup/', views.signup, name='signup'),
     path('service/<str:name>/', views.service_detail, name='service_detail'),  # Detail page for each service
+    #path('faq/', views.faq, name='faq'),
+    # Add the contact page URL here
+    #path('contact/', views.contact, name='contact'),
 ]
 
 if settings.DEBUG:

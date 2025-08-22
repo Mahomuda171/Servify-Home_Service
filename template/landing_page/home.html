@@ -109,14 +109,12 @@
 <!-- About Us Section -->
 <section class="py-5" style="background-color: #f9f9f9;">
   <div class="container">
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <img src="{% static 'images/about_us.png' %}" alt="About Us" class="img-fluid rounded-3 shadow">
-      </div>
-      <div class="col-md-6">
+    <div class="row align-items-center justify-content-center"> <!-- Added 'justify-content-center' to center content -->
+      
+      <div class="col-md-8 text-center"> <!-- Centered the content by using 'text-center' -->
         <h2 class="fw-bold">About Servify</h2>
-        <p class="text-muted">At Servify, we connect you with trusted service providers for your everyday needs. Whether it’s household help, repairs, or maintenance, we have you covered with reliable and professional solutions. Our mission is to make your life easier, providing high-quality services right at your doorstep.</p>
-        <ul class="list-unstyled">
+        <p class="text-muted font-weight-bold">At Servify, we connect you with trusted service providers for your everyday needs. Whether it’s household help, repairs, or maintenance, we have you covered with reliable and professional solutions. Our mission is to make your life easier, providing high-quality services right at your doorstep.</p>
+        <ul class="list-unstyled text-left mx-auto" style="max-width: 600px;">
           <li><strong>Our Vision:</strong> To be the most trusted service provider platform globally.</li>
           <li><strong>Our Mission:</strong> To offer timely and affordable services that exceed customer expectations.</li>
         </ul>
@@ -124,6 +122,7 @@
     </div>
   </div>
 </section>
+
 
 <!-- FAQ Section -->
 <section class="py-5" style="background-color: #ecf0f1; color: #34495e;" id="faqSection">
