@@ -129,6 +129,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 # Media files (uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
+AUTH_USER_MODEL = 'Service_App.User'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

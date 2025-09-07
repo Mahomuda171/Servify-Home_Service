@@ -1,17 +1,58 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
+from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from django.contrib.auth import authenticate,logout, login as auth_login
+
 
 # Home page
 def home(request):
     return render(request, 'landing_page/home.html')
 
-# Login page
-def login(request):
-    return render(request, 'landing_page/login.html')
 
 # Signup page
 def signup(request):
-    return render(request, 'landing_page/signup.html')
+    if request.method == 'POST':
+        form = CustomUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth_login(request, user)
+            # Redirect based on user type
+            if user.user_type == 'worker':
+                return redirect('login')
+            else:
+                return redirect('login')
+    else:
+        form = CustomUserCreationForm()
+    return render(request, 'landing_page/signup.html', {'form': form})
 
+# Login page - FIXED
+def login(request):
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                auth_login(request, user)  # This is correct - request and user
+                # Redirect based on user type
+                if user.user_type == 'worker':
+                    return redirect('worker')
+                else:
+                    return redirect('customer')
+    else:
+        form = CustomAuthenticationForm()
+    # FIX: Use login.html template instead of signup.html
+    return render(request, 'landing_page/login.html', {'form': form})
+
+@login_required
+def customer(request):
+    return render(request, 'customer_dashboard/customer.html')
+
+@login_required
+def worker(request):
+    return render(request, 'worker_dashboard/worker.html')
 # About page
 def about(request):
     return render(request, 'landing_page/about.html')
@@ -19,6 +60,9 @@ def about(request):
 # FAQ page
 def faq(request):
     return render(request, 'landing_page/faq.html')
+# Blog page
+def blog(request):
+    return render(request, 'landing_page/blog.html')
 
 # Services page (lists all services)
 def service(request):
