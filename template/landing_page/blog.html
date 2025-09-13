@@ -1,4 +1,52 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} Blog {% endblock %}
+{% block title %} Servify - Blog {% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Our Blog</h2>
+
+    <!-- Show "Create New Blog Post" button only for authenticated non-admin users -->
+
+
+    <div class="row">
+        {% for blog in blogs %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ blog.title }}</h5>
+                    <p class="card-text">{{ blog.requirements }}</p>
+                    <p class="text-muted">Posted by: {{ blog.user.username }} on {{ blog.created_at }}</p>
+
+                    <!-- Admin Response Section -->
+                    <div class="admin-response mt-3 border-top pt-3">
+                        <h6>Admin Response:</h6>
+                        {% if blog.admin_response %}
+                            <p class="text-success">{{ blog.admin_response }}</p>
+                            <p class="text-info">Contacted: {% if blog.contacted %}Yes{% else %}No{% endif %}</p>
+                        {% else %}
+                            <p class="text-muted">No response yet</p>
+                        {% endif %}
+
+                        <!-- Respond Button - ONLY FOR ADMIN USERS -->
+                        {% if user.is_staff %}
+                            <a href="{% url 'admin_blog_response' blog.blog_id %}" class="btn btn-sm btn-outline-primary mt-2">Respond</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">No blog posts yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% if user.is_authenticated and not user.is_staff %}
+    <div class="text-center mb-4">
+        <a href="{% url 'create_blog' %}" class="btn btn-primary">Create New Blog Post</a>
+    </div>
+    {% endif %}
+{% endblock %}

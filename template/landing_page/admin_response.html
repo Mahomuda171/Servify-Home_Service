@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Servify - Admin Response {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center my-4">Admin Response</h2>
+
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4>{{ blog.title }}</h4>
+                    <p><strong>User:</strong> {{ blog.user.username }}</p>
+                    <p><strong>Requirements:</strong> {{ blog.requirements }}</p>
+                    {% if blog.contact_info %}
+                    <p><strong>Contact Info:</strong> {{ blog.contact_info }}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label for="admin_response" class="form-label">Your Response</label>
+                    <textarea class="form-control" id="admin_response" name="admin_response" rows="4">{{ blog.admin_response }}</textarea>
+                </div>
+
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="contacted" name="contacted" {% if blog.contacted %}checked{% endif %}>
+                    <label class="form-check-label" for="contacted">Mark as contacted</label>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Save Response</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

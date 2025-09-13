@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect,get_object_or_404
+from .blog_form import BlogForm
+from django.contrib.auth.decorators import login_required,user_passes_test
 from .forms import CustomUserCreationForm, CustomAuthenticationForm
 from django.contrib.auth import authenticate,logout, login as auth_login
+from .models import Blog
 
 
 # Home page
@@ -62,7 +63,40 @@ def faq(request):
     return render(request, 'landing_page/faq.html')
 # Blog page
 def blog(request):
-    return render(request, 'landing_page/blog.html')
+    blogs = Blog.objects.all().order_by('-created_at')
+    return render(request, 'landing_page/blog.html', {'blogs': blogs})
+
+@login_required
+def create_blog(request):
+    if request.method == 'POST':
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.user = request.user
+            blog.save()
+            return redirect('blog')  # Fix the redirect
+    else:
+        form = BlogForm()
+    return render(request, 'landing_page/create_blog.html', {'form': form})
+
+def is_admin(user):
+    return user.is_staff
+
+@user_passes_test(is_admin)
+def admin_response(request, blog_id):
+    blog = get_object_or_404(Blog, blog_id=blog_id)
+
+    if request.method == 'POST':
+        admin_response = request.POST.get('admin_response')
+        contacted = request.POST.get('contacted') == 'on'
+
+        blog.admin_response = admin_response
+        blog.contacted = contacted
+        blog.save()
+        return redirect('blog')
+
+    return render(request, 'landing_page/admin_response.html', {'blog': blog})
+
 
 # Services page (lists all services)
 def service(request):

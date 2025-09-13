@@ -108,3 +108,18 @@ class Payment(models.Model):
 
     def __str__(self):
         return f"Payment #{self.payment_id} - {self.amount}"
+
+class Blog(models.Model):
+    blog_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    title = models.CharField(max_length=200)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    content = models.TextField(max_length=2000)
+    requirements = models.TextField(max_length=1000, help_text="Describe your requirements in detail")
+    contact_info = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    admin_response = models.TextField(max_length=1000, blank=True)
+    contacted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Blog by {self.user.username} - {self.title}"
