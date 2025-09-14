@@ -3,9 +3,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from Service_App import views as home
-from Service_App import views as customer
 from Service_App import views as worker
-
+from Service_App import views as login_user
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -19,8 +18,15 @@ urlpatterns = [
     path('blog/', home.blog, name='blog'),
     path('create_blog/', home.create_blog, name='create_blog'),
     path('admin/blog/response/<uuid:blog_id>/', home.admin_response, name='admin_blog_response'),
-    path('customer/', customer.customer, name='customer'),
-    path('worker/', worker.worker, name='worker'),
+
+    path('log_base/', login_user.log_base, name='log_base'),
+    path('log_nav/', login_user.log_nav, name='log_nav'),
+    path('customer_profile/', login_user.customer_profile, name='customer_profile'),
+    path('logout/', login_user.logout_view, name='logout'),
+    path('update_profile/', login_user.update_profile, name='update_profile'),
+
+
+    path('worker_profile/', worker.worker_profile, name='worker_profile'),
 
 
 

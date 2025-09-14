@@ -33,3 +33,8 @@ class CustomAuthenticationForm(AuthenticationForm):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'})
     )
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+           model = User
+           fields = ['username', 'email', 'address', 'phn_Num']

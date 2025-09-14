@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .blog_form import BlogForm
 from django.contrib.auth.decorators import login_required,user_passes_test
-from .forms import CustomUserCreationForm, CustomAuthenticationForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm
 from django.contrib.auth import authenticate,logout, login as auth_login
 from .models import Blog
 
@@ -39,17 +39,14 @@ def login(request):
                 auth_login(request, user)  # This is correct - request and user
                 # Redirect based on user type
                 if user.user_type == 'worker':
-                    return redirect('worker')
+                    return redirect('worker_profile')
                 else:
-                    return redirect('customer')
+                    return redirect('customer_profile')
     else:
         form = CustomAuthenticationForm()
     # FIX: Use login.html template instead of signup.html
     return render(request, 'landing_page/login.html', {'form': form})
 
-@login_required
-def customer(request):
-    return render(request, 'customer_dashboard/customer.html')
 
 @login_required
 def worker(request):
@@ -132,3 +129,30 @@ def service_detail(request, name):
         return render(request, 'landing_page/service_detail.html', {'service': service_data})
     else:
         return render(request, 'landing_page/404.html')  # Return a 404 page if the service is not found
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+def log_base(request):
+    return render(request, template_name='customer_dashboard/log_base.html')
+
+def log_nav(request):
+    return render(request, template_name='customer_dashboard/log_nav.html')
+@login_required
+def customer_profile(request):
+    return render(request, template_name='customer_dashboard/customer_profile.html',context= {'user': request.user})
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST,request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('log_profile')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+    return render(request, 'customer_dashboard/profile_form.html', {'form': form})
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+
+@login_required
+def worker_profile(request):
+    return render(request, template_name='worker_dashboard/worker_profile.html',context= {'user': request.user})
