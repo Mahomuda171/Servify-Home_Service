@@ -1,0 +1,321 @@
+{% extends "worker_dashboard/worker_base.html" %}
+{% block body_class %}blur-page{% endblock %}
+
+{% block content %}
+<div class="profile-update-container d-flex justify-content-center align-items-center vh-100">
+    <div class="card profile-update-card shadow-lg border-0">
+        <div class="card-header bg-primary text-white text-center py-4">
+            <div class="profile-icon mb-3">
+                <i class="fas fa-user-edit fa-3x"></i>
+            </div>
+            <h2 class="mb-0">Update Your Profile</h2>
+            <p class="mb-0 mt-2 opacity-75">Keep your information up to date</p>
+        </div>
+
+        <div class="card-body p-5">
+            <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                {% csrf_token %}
+
+                <div class="row">
+                    <!-- Personal Information Section -->
+                    <div class="col-md-6">
+                        <h5 class="section-title mb-4 text-primary">
+                            <i class="fas fa-user me-2"></i>Personal Information
+                        </h5>
+
+                        <!-- Username Field -->
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label fw-semibold">Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-user text-primary"></i>
+                                </span>
+                                {{ form.username }}
+                            </div>
+                            {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label fw-semibold">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-envelope text-primary"></i>
+                                </span>
+                                {{ form.email }}
+                            </div>
+                            {% if form.email.errors %}
+                                <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Phone Number Field -->
+                        <div class="mb-3">
+                            <label for="id_phn_Num" class="form-label fw-semibold">Phone Number</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-phone text-primary"></i>
+                                </span>
+                                {{ form.phn_Num }}
+                            </div>
+                            {% if form.phn_Num.errors %}
+                                <div class="text-danger small mt-1">{{ form.phn_Num.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Professional Information Section -->
+                    <div class="col-md-6">
+                        <h5 class="section-title mb-4 text-primary">
+                            <i class="fas fa-briefcase me-2"></i>Professional Information
+                        </h5>
+
+                        <!-- Skills Field - Custom Text Input -->
+                        <div class="mb-3">
+                            <label for="skills_text" class="form-label fw-semibold">Skills & Services</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-tools text-primary"></i>
+                                </span>
+                                <input type="text"
+                                       id="skills_text"
+                                       name="skills_text"
+                                       class="form-control"
+                                       placeholder="e.g., Plumbing, Electrical, Carpentry"
+                                       value="{{ current_skills }}">
+                            </div>
+                            <div class="form-text">Enter your skills separated by commas</div>
+                        </div>
+
+                        <!-- Experience Field -->
+                        <div class="mb-3">
+                            <label for="id_experience" class="form-label fw-semibold">Experience (Years)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">
+                                    <i class="fas fa-chart-line text-primary"></i>
+                                </span>
+                                {{ form.experience }}
+                            </div>
+                            {% if form.experience.errors %}
+                                <div class="text-danger small mt-1">{{ form.experience.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Availability Field -->
+                        <div class="mb-4">
+                            <div class="form-check form-switch">
+                                {{ form.is_available }}
+                                <label class="form-check-label fw-semibold" for="id_is_available">
+                                    Currently Available for Work
+                                </label>
+                            </div>
+                            {% if form.is_available.errors %}
+                                <div class="text-danger small mt-1">{{ form.is_available.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Field - Full Width -->
+                <div class="row">
+                    <div class="col-12">
+                        <h5 class="section-title mb-3 text-primary">
+                            <i class="fas fa-map-marker-alt me-2"></i>Address Information
+                        </h5>
+                        <div class="mb-4">
+                            <label for="id_address" class="form-label fw-semibold">Full Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light align-items-start">
+                                    <i class="fas fa-home text-primary mt-1"></i>
+                                </span>
+                                {{ form.address }}
+                            </div>
+                            {% if form.address.errors %}
+                                <div class="text-danger small mt-1">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <a href="{% url 'worker_profile' %}" class="btn btn-outline-secondary me-md-2">
+                        <i class="fas fa-arrow-left me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="fas fa-save me-2"></i>Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-update-container {
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.profile-update-card {
+    width: 100%;
+    max-width: 900px;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.card-header {
+    border-bottom: none;
+    border-radius: 20px 20px 0 0 !important;
+}
+
+.profile-icon {
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+    40% {transform: translateY(-10px);}
+    60% {transform: translateY(-5px);}
+}
+
+.section-title {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.form-control, .form-select {
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 12px 15px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    transform: translateY(-2px);
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+    border-right: none;
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.form-check-input {
+    width: 3em;
+    height: 1.5em;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 12px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #0d6efd, #0dcaf0);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.4);
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-2px);
+}
+
+/* Hide the original skills dropdown */
+#id_skills {
+    display: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-update-card {
+        margin: 20px;
+    }
+
+    .card-body {
+        padding: 2rem !important;
+    }
+
+    .section-title {
+        font-size: 1rem;
+    }
+}
+
+/* Form validation styles */
+.was-validated .form-control:valid {
+    border-color: #198754;
+}
+
+.was-validated .form-control:invalid {
+    border-color: #dc3545;
+}
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script>
+// Form validation and enhanced functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Add Bootstrap styling to form elements
+    const formControls = document.querySelectorAll('input, select, textarea');
+    formControls.forEach(control => {
+        control.classList.add('form-control');
+    });
+
+    // Special handling for checkboxes
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach(checkbox => {
+        checkbox.classList.remove('form-control');
+        checkbox.classList.add('form-check-input');
+    });
+
+    // Hide the original skills dropdown
+    const skillsDropdown = document.getElementById('id_skills');
+    if (skillsDropdown) {
+        skillsDropdown.style.display = 'none';
+    }
+
+    // Add character counter for address
+    const addressField = document.getElementById('id_address');
+    if (addressField) {
+        const counter = document.createElement('div');
+        counter.className = 'form-text text-end';
+        addressField.parentNode.appendChild(counter);
+
+        addressField.addEventListener('input', function() {
+            const length = this.value.length;
+            counter.textContent = `${length} characters`;
+        });
+
+        // Trigger initial count
+        addressField.dispatchEvent(new Event('input'));
+    }
+
+    // Form validation
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    }, false);
+});
+</script>
+{% endblock %}

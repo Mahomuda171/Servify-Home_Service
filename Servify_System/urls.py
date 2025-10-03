@@ -22,14 +22,14 @@ urlpatterns = [
     path('log_base/', login_user.log_base, name='log_base'),
     path('log_nav/', login_user.log_nav, name='log_nav'),
     path('customer_profile/', login_user.customer_profile, name='customer_profile'),
-    path('logout/', login_user.logout_view, name='logout'),
+    path('logout_view/', login_user.logout_view, name='logout_view'),
     path('update_profile/', login_user.update_profile, name='update_profile'),
 
-
+    path('worker_base/', worker.worker_base, name='worker_base'),
+    path('worker_navbar/', worker.worker_navbar, name='worker_navbar'),
     path('worker_profile/', worker.worker_profile, name='worker_profile'),
-
-
-
+    path('logout/', worker.logout, name='logout'),
+    path('worker_profile_update/', worker.worker_profile_update, name='worker_profile_update'),
 
 ]
 

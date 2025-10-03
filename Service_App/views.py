@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from .blog_form import BlogForm
 from django.contrib.auth.decorators import login_required,user_passes_test
-from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm
+from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm, WorkerProfileUpdateForm
 from django.contrib.auth import authenticate,logout, login as auth_login
 from .models import Blog
 
@@ -152,7 +152,31 @@ def update_profile(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+###########################################################################################################################
+def worker_base(request):
+    return render(request, template_name='worker_dashboard/log_base.html')
 
+def worker_navbar(request):
+    return render(request, template_name='worker_dashboard/log_nav.html')
 @login_required
 def worker_profile(request):
     return render(request, template_name='worker_dashboard/worker_profile.html',context= {'user': request.user})
+
+
+@login_required
+def worker_profile_update(request):
+    if request.method == 'POST':
+        form = WorkerProfileUpdateForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('worker_profile')
+    else:
+        form = WorkerProfileUpdateForm(instance=request.user)  # Ei line change korun
+
+    return render(request, 'worker_dashboard/worker_profile_update.html', {'form': form})
+
+
+def logout(request):
+    logout(request)
+    return redirect('login')
+
