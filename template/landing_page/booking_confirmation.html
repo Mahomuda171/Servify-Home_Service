@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Booking Confirmation - Servify{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-body text-center p-5">
+                    
+                    <!-- Confirmation Icon and Message -->
+                    <div class="mb-4">
+                        <div class="display-3 text-success mb-2">✔️</div>
+                        <h2 class="fw-bold mb-3">Your Booking is Confirmed!</h2>
+                        <p class="text-muted">Thank you for choosing <strong>Servify</strong>. We’ll notify you with updates.</p>
+                    </div>
+
+                    <!-- Booking Summary -->
+                    <div class="text-start my-4">
+                        <h5 class="mb-3">Booking Summary</h5>
+                        <ul class="list-group list-group-flush shadow-sm">
+                            <li class="list-group-item">
+                                <strong>Service:</strong> {{ booking.subservice.name }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Date & Time:</strong> {{ booking.scheduled_date|date:"F j, Y, g:i A" }}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Worker:</strong> 
+                                {% if booking.worker %}
+                                    {{ booking.worker.username }}
+                                {% else %}
+                                    Not assigned yet
+                                {% endif %}
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Price:</strong> ₹{{ amount }}
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Payment Section -->
+                    <div class="my-5">
+                        <h5 class="mb-3">Complete Your Payment</h5>
+                        <p class="text-muted">Click the button below to proceed to payment.</p>
+                        
+                        <!-- Dummy Payment Button -->
+                        <a href="#" class="btn btn-primary btn-lg px-5">Pay Now</a>
+                        <p class="mt-2 small text-muted">You will be redirected to a secure payment gateway.</p>
+                    </div>
+
+                    <!-- Navigation -->
+                    <hr class="my-4">
+                    <a href="{% url 'home' %}" class="btn btn-outline-secondary">← Back to Home</a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: all 0.3s ease-in-out;
+}
+.card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+</style>
+{% endblock %}

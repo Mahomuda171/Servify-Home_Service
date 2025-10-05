@@ -2,6 +2,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from .models import User
+from .models import Booking, SubService
+from django.utils import timezone
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -51,3 +53,24 @@ class WorkerProfileUpdateForm(forms.ModelForm):
             'experience': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Years of Experience'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+
+class BookingForm(forms.ModelForm):
+    scheduled_date = forms.DateTimeField(
+        widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}),
+        input_formats=['%Y-%m-%dT%H:%M']
+    )
+    
+    class Meta:
+        model = Booking
+        fields = ['scheduled_date', 'address', 'description']
+        widgets = {
+            'address': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Enter service address'}),
+            'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Any specific requirements?'}),
+        }
+    
+    def clean_scheduled_date(self):
+        scheduled_date = self.cleaned_data['scheduled_date']
+        if scheduled_date < timezone.now():
+            raise forms.ValidationError("Scheduled date cannot be in the past.")
+        return scheduled_date
