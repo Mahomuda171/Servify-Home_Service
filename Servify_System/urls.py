@@ -24,6 +24,10 @@ urlpatterns = [
     path('customer_profile/', login_user.customer_profile, name='customer_profile'),
     path('logout_view/', login_user.logout_view, name='logout_view'),
     path('update_profile/', login_user.update_profile, name='update_profile'),
+    path('cus_faq/', login_user.cus_faq, name='cus_faq'),
+    path('cus_blog/', login_user.cus_blog, name='cus_blog'),
+    path('create_blog/', login_user.create_blog, name='create_blog'),
+    path('admin/blog/response/<uuid:blog_id>/', login_user.admin_response, name='admin_blog_response'),
 
     path('worker_base/', worker.worker_base, name='worker_base'),
     path('worker_navbar/', worker.worker_navbar, name='worker_navbar'),

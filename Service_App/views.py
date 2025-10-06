@@ -63,37 +63,6 @@ def blog(request):
     blogs = Blog.objects.all().order_by('-created_at')
     return render(request, 'landing_page/blog.html', {'blogs': blogs})
 
-@login_required
-def create_blog(request):
-    if request.method == 'POST':
-        form = BlogForm(request.POST)
-        if form.is_valid():
-            blog = form.save(commit=False)
-            blog.user = request.user
-            blog.save()
-            return redirect('blog')  # Fix the redirect
-    else:
-        form = BlogForm()
-    return render(request, 'landing_page/create_blog.html', {'form': form})
-
-def is_admin(user):
-    return user.is_staff
-
-@user_passes_test(is_admin)
-def admin_response(request, blog_id):
-    blog = get_object_or_404(Blog, blog_id=blog_id)
-
-    if request.method == 'POST':
-        admin_response = request.POST.get('admin_response')
-        contacted = request.POST.get('contacted') == 'on'
-
-        blog.admin_response = admin_response
-        blog.contacted = contacted
-        blog.save()
-        return redirect('blog')
-
-    return render(request, 'landing_page/admin_response.html', {'blog': blog})
-
 
 # Services page (lists all services)
 def service(request):
@@ -152,6 +121,45 @@ def update_profile(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def cus_blog(request):
+    blogs = Blog.objects.all().order_by('-created_at')
+    return render(request, 'customer_dashboard/cus_blog.html', {'blogs': blogs})
+
+@login_required
+def create_blog(request):
+    if request.method == 'POST':
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.user = request.user
+            blog.save()
+            return redirect('blog')  # Fix the redirect
+    else:
+        form = BlogForm()
+    return render(request, 'customer_dashboard/create_blog.html', {'form': form})
+
+def is_admin(user):
+    return user.is_staff
+
+@user_passes_test(is_admin)
+def admin_response(request, blog_id):
+    blog = get_object_or_404(Blog, blog_id=blog_id)
+
+    if request.method == 'POST':
+        admin_response = request.POST.get('admin_response')
+        contacted = request.POST.get('contacted') == 'on'
+
+        blog.admin_response = admin_response
+        blog.contacted = contacted
+        blog.save()
+        return redirect('blog')
+
+    return render(request, 'customer_dashboard/admin_response.html', {'blog': blog})
+
+def cus_faq(request):
+    return render(request, 'customer_dashboard/cus_faq.html')
+
 ###########################################################################################################################
 def worker_base(request):
     return render(request, template_name='worker_dashboard/log_base.html')
