@@ -1,119 +1,29 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ service.name }} - Servify{% endblock %}
+{% block title %}Our Services{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row mb-4">
-        <div class="col">
-            <h1 class="fw-bold text-primary">{{ service.name }}</h1>
-            <p class="lead">{{ service.description }}</p>
-        </div>
-    </div>
-
-    <!-- Subservices -->
-    <div class="row">
-        <div class="col">
-            <h3 class="mb-4">Available Subservices</h3>
-        </div>
-    </div>
+<!-- Services Section -->
+<section class="py-5 bg-light">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-4">Our Services</h2>
     <div class="row g-4">
-        {% for subservice in subservices %}
-        <div class="col-md-6 col-lg-4">
-            <div class="card h-100 shadow-sm">
-                
-                {% if subservice.image %}
-                <img src="{{ subservice.image.url }}" class="card-img-top sub-img" alt="{{ subservice.name }}">
-                {% endif %}
-
-                <div class="card-body">
-                    <h5 class="card-title">{{ subservice.name }}</h5>
-                    <p class="card-text">{{ subservice.description }}</p>
-                    <p><strong>Price:</strong> ₹{{ subservice.price }}</p>
-                    <p><strong>Duration:</strong> {{ subservice.duration }}</p>
-                    {% if subservice.is_popular %}
-                        <span class="badge bg-warning text-dark">Popular</span>
-                    {% endif %}
-                </div>
-                <div class="card-footer bg-transparent border-0">
-                    <!-- Trigger Modal -->
-                    <button class="btn btn-primary w-100" data-bs-toggle="modal"
-                        data-bs-target="#bookModal{{ subservice.sub_id }}">
-                        Book Now
-                    </button>
-                </div>
+      {% for service in services %}
+      <div class="col-md-4">
+        <!-- Updated URL for service detail page -->
+        <a href="{% url 'service_detail' service.name|slugify %}">
+          <div class="card shadow-sm border-0 h-100">
+            <img src="{% static 'images/'|add:service.image %}" class="card-img-top" alt="{{ service.name }}">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold">{{ service.name }}</h5>
+              <p class="card-text text-muted">{{ service.description }}</p>
             </div>
-        </div>
-
-        <!-- Booking Modal -->
-        <div class="modal fade" id="bookModal{{ subservice.sub_id }}" tabindex="-1"
-            aria-labelledby="bookModalLabel{{ subservice.sub_id }}" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form method="post" action="{% url 'book_service' subservice.sub_id %}">
-                        {% csrf_token %}
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="bookModalLabel{{ subservice.sub_id }}">
-                                Book: {{ subservice.name }}
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Booking Date -->
-                            <div class="mb-3">
-                                <label for="scheduled_date" class="form-label">Select Date & Time</label>
-                                <input type="datetime-local" name="scheduled_date" required class="form-control">
-                            </div>
-
-                            <!-- Address (optional) -->
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Service Address</label>
-                                <textarea name="address" class="form-control" rows="2" placeholder="Optional (if different from profile)"></textarea>
-                            </div>
-
-                            <!-- Worker Selection -->
-                            <div class="mb-3">
-                                <label for="worker" class="form-label">Select Preferred Worker</label>
-                                <select name="worker_id" class="form-select">
-                                    <option value="">-- Any Available --</option>
-                                    {% for worker in workers %}
-                                        {% if subservice in worker.worker_profile.subservices.all %}
-                                            <option value="{{ worker.user_id }}">
-                                                {{ worker.username }} (₹{{ worker.worker_profile.hourly_rate }}/hr)
-                                            </option>
-                                        {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success w-100">
-                                Confirm Booking
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+          </div>
+        </a>
+      </div>
+      {% endfor %}
     </div>
-</div>
-
-<!-- Optional JS/CSS -->
-<style>
-.card {
-    transition: transform 0.2s ease-in-out;
-}
-.card:hover {
-    transform: translateY(-5px);
-}
-.sub-img {
-    object-fit: cover;
-    height: 150px;
-    width: 100%;
-    border-bottom: 1px solid #ddd;
-}
-</style>
+  </div>
+</section>
 {% endblock %}

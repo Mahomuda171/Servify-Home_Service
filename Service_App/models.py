@@ -27,13 +27,13 @@ class User(AbstractUser):
 
 
 class Service(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    name = models.CharField(max_length=100, unique=True)
-   # price = models.DecimalField(max_digits=8, decimal_places=2)  # Changed from CharField
+    s_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    s_name = models.CharField(max_length=100, unique=True)
+    price = models.DecimalField(max_digits=8, decimal_places=2)  # Changed from CharField
     description = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.s_name
 
 
 class Booking(models.Model):
@@ -49,7 +49,6 @@ class Booking(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings_made')
     worker = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings_assigned', blank=True, null=True)
     service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='bookings')
-    subservice = models.ForeignKey('SubService', on_delete=models.CASCADE, null=True, blank=True, related_name='bookings')
     date_created = models.DateTimeField(auto_now_add=True)
     scheduled_date = models.DateTimeField()  # When the service should be performed
     completed_date = models.DateTimeField(blank=True, null=True)
@@ -58,7 +57,7 @@ class Booking(models.Model):
     address = models.TextField(blank=True, null=True)  # Service address if different from user address
 
     def __str__(self):
-        return f"Booking #{self.bk_id} - {self.service.name}"
+        return f"Booking #{self.bk_id} - {self.service.s_name}"
 
 
 class Review(models.Model):
@@ -124,38 +123,3 @@ class Blog(models.Model):
 
     def __str__(self):
         return f"Blog by {self.user.username} - {self.title}"
-
-
-
-# Add these to your existing models.py
-
-class SubService(models.Model):
-    sub_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    service = models.ForeignKey(Service, on_delete=models.CASCADE, related_name='subservices')
-    name = models.CharField(max_length=200)
-    description = models.TextField(blank=True, null=True)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
-    duration = models.CharField(max_length=50, default="1-2 hours")
-    is_popular = models.BooleanField(default=False)
-    image = models.ImageField(upload_to='subservices/',null=True, blank=True)
-    def __str__(self):
-        return f"{self.service.name} - {self.name}"
-
-class WorkerProfile(models.Model):
-    worker = models.OneToOneField(User, on_delete=models.CASCADE, related_name='worker_profile')
-    subservices = models.ManyToManyField(SubService, related_name='workers')
-    experience = models.PositiveIntegerField(default=0)
-    rating = models.DecimalField(max_digits=3, decimal_places=2, default=5.0)
-    hourly_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0)
-    bio = models.TextField(blank=True, null=True)
-    license_number = models.CharField(max_length=100, blank=True, null=True)
-    is_verified = models.BooleanField(default=False)
-    available_from = models.TimeField(default='09:00')
-    available_to = models.TimeField(default='18:00')
-    
-    def __str__(self):
-        return f"Worker Profile - {self.worker.username}"
-
-# Update your existing Booking model to include subservice
-# Add this field to your existing Booking model:
-# subservice = models.ForeignKey(SubService, on_delete=models.CASCADE, null=True, blank=True)

@@ -2,40 +2,301 @@
 {% block body_class %}blur-page{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="card p-4 shadow" style="width: 1000px;">
-        <div class="card-body">
-            <h5 class="card-title">User Information</h5>
-            <br>
-            <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
-            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
-            {% if user.address %}
-            <p class="card-text"><strong>Address:</strong> {{ user.address }}</p>
-            {% else %}
-            <p class="card-text"><strong>Address:</strong> Not provided</p>
-            {% endif %}
-            {% if user.phn_Num %}
-            <p class="card-text"><strong>Contact Number:</strong> {{ user.phn_Num }}</p>
-            {% else %}
-            <p class="card-text"><strong>Contact Number:</strong> Not provided</p>
-            {% endif %}
-            {% if user.skills %}
-            <p class="card-text"><strong>Skills:</strong> {{ user.skills }}</p>
-            {% else %}
-            <p class="card-text"><strong>Skills:</strong> Not provided</p>
-            {% endif %}
-            {% if user.experience %}
-            <p class="card-text"><strong>Experience:</strong> {{ user.experience }}</p>
-            {% else %}
-            <p class="card-text"><strong>Experience:</strong> Not provided</p>
-            {% endif %}
-            {% if user.is_available %}
-            <p class="card-text"><strong>Availability:</strong> {{ user.is_available }}</p>
-            {% else %}
-            <p class="card-text"><strong>Availability:</strong> Not provided</p>
-            {% endif %}
+<div class="simple-profile-container">
+    <div class="profile-card">
+        <div class="profile-header">
+            <h1>Worker Profile</h1>
+            <p>Manage your professional information</p>
+        </div>
+
+        <div class="profile-content">
+            <!-- Personal Information -->
+            <div class="info-section personal-info">
+                <h2><i class="fas fa-user"></i> Personal Information</h2>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-user-tag"></i>
+                        <strong>Username:</strong>
+                    </div>
+                    <div class="info-value">{{ user.username }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-envelope"></i>
+                        <strong>Email:</strong>
+                    </div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-phone"></i>
+                        <strong>Phone:</strong>
+                    </div>
+                    <div class="info-value">{% if user.phn_Num %}{{ user.phn_Num }}{% else %}<span class="not-provided">Not provided</span>{% endif %}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <strong>Address:</strong>
+                    </div>
+                    <div class="info-value">{% if user.address %}{{ user.address }}{% else %}<span class="not-provided">Not provided</span>{% endif %}</div>
+                </div>
+            </div>
+
+            <!-- Professional Information -->
+            <div class="info-section professional-info">
+                <h2><i class="fas fa-briefcase"></i> Professional Information</h2>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-tools"></i>
+                        <strong>Skills:</strong>
+                    </div>
+                    <div class="info-value">{% if user.skills.all %}{% for skill in user.skills.all %}<span class="skill-tag">{{ skill.name }}</span>{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}<span class="not-provided">Not provided</span>{% endif %}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-chart-line"></i>
+                        <strong>Experience:</strong>
+                    </div>
+                    <div class="info-value">{% if user.experience %}<span class="experience-badge">{{ user.experience }} years</span>{% else %}<span class="not-provided">Not provided</span>{% endif %}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">
+                        <i class="fas fa-clock"></i>
+                        <strong>Availability:</strong>
+                    </div>
+                    <div class="info-value">
+                        <span class="availability-status {% if user.is_available %}available{% else %}not-available{% endif %}">
+                            {% if user.is_available %}Available for Work{% else %}Not Available{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'worker_profile_update' %}" class="update-btn">
+                <i class="fas fa-edit"></i>
+                Update Profile
+            </a>
         </div>
     </div>
-    <a href="{% url 'worker_profile_update' %}" class="btn btn-danger mt-3">Update</a>
 </div>
+
+<style>
+.simple-profile-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-card {
+
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    padding: 30px;
+    border: 1px solid #e3f2fd;
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #2196f3;
+}
+
+.profile-header h1 {
+    color: #1565c0;
+    margin: 0 0 10px 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.profile-header p {
+    color: #42a5f5;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.info-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.personal-info {
+
+    border-left: 4px solid #2196f3;
+}
+
+.professional-info {
+        border-left: 4px solid #4caf50;
+}
+
+.info-section h2 {
+    color: #2c3e50;
+    margin: 0 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(0,0,0,0.1);
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-section h2 i {
+    color: #2196f3;
+}
+
+.professional-info h2 i {
+    color: #4caf50;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.info-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+    color: #455a64;
+    font-weight: 600;
+}
+
+.info-label i {
+    color: #2196f3;
+    width: 16px;
+}
+
+.info-value {
+    color: #37474f;
+    flex: 1;
+    font-weight: 500;
+}
+
+/* Skill Tags */
+.skill-tag {
+    display: inline-block;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9rem;
+    margin: 2px;
+    font-weight: 500;
+}
+
+/* Experience Badge */
+.experience-badge {
+    background: linear-gradient(135deg, #4caf50, #8bc34a);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* Availability Status */
+.availability-status {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.availability-status.available {
+    background: linear-gradient(135deg, #4caf50, #66bb6a);
+    color: white;
+}
+
+.availability-status.not-available {
+    background: linear-gradient(135deg, #f44336, #ef5350);
+    color: white;
+}
+
+/* Not Provided Text */
+.not-provided {
+    color: #78909c;
+    font-style: italic;
+    font-weight: normal;
+}
+
+/* Profile Actions */
+.profile-actions {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #e3f2fd;
+}
+
+.update-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #2196f3, #1976d2);
+    color: white;
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(33, 150, 243, 0.3);
+}
+
+.update-btn:hover {
+    background: linear-gradient(135deg, #1976d2, #1565c0);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .simple-profile-container {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    .profile-card {
+        padding: 20px;
+    }
+
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .info-label {
+        min-width: auto;
+    }
+
+    .profile-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .info-section {
+        padding: 15px;
+    }
+}
+
+/* Hover Effects */
+.info-item:hover {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    transform: translateX(5px);
+    transition: all 0.3s ease;
+}
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 {% endblock %}

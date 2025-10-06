@@ -4,16 +4,6 @@ from django.contrib.auth.decorators import login_required,user_passes_test
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm, WorkerProfileUpdateForm
 from django.contrib.auth import authenticate,logout, login as auth_login
 from .models import Blog
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Service, SubService, WorkerProfile, User, Booking
-from .forms import BookingForm  # We'll create this next
-from .models import SubService
-from .models import Service, SubService
-from .models import Service, SubService, WorkerProfile
-from django.http import Http404
-
-
 
 
 # Home page
@@ -73,37 +63,6 @@ def blog(request):
     blogs = Blog.objects.all().order_by('-created_at')
     return render(request, 'landing_page/blog.html', {'blogs': blogs})
 
-@login_required
-def create_blog(request):
-    if request.method == 'POST':
-        form = BlogForm(request.POST)
-        if form.is_valid():
-            blog = form.save(commit=False)
-            blog.user = request.user
-            blog.save()
-            return redirect('blog')  # Fix the redirect
-    else:
-        form = BlogForm()
-    return render(request, 'landing_page/create_blog.html', {'form': form})
-
-def is_admin(user):
-    return user.is_staff
-
-@user_passes_test(is_admin)
-def admin_response(request, blog_id):
-    blog = get_object_or_404(Blog, blog_id=blog_id)
-
-    if request.method == 'POST':
-        admin_response = request.POST.get('admin_response')
-        contacted = request.POST.get('contacted') == 'on'
-
-        blog.admin_response = admin_response
-        blog.contacted = contacted
-        blog.save()
-        return redirect('blog')
-
-    return render(request, 'landing_page/admin_response.html', {'blog': blog})
-
 
 # Services page (lists all services)
 def service(request):
@@ -120,39 +79,31 @@ def service(request):
     
     return render(request, 'landing_page/service.html', {'services': services})
 
-def service_detail(request, service_name):
-    # Map from URL slug to real name
-    service_map = {
-        'home_cleaning': 'Home Cleaning',
-        'plumbing': 'Plumbing',
-        'carpentry': 'Carpentry',
-        'painting': 'Painting',
-        'electrician': 'Electrician',
-        'ac_repair': 'AC Repair',
+# If you still want individual service pages (for detailed service info), you can create one dynamic detail page.
+def service_detail(request, name):
+    # Dictionary of all services
+    services = {
+        'home_cleaning': {'name': 'Home Cleaning', 'image': 'home_cleaning.png', 'description': 'Professional cleaning at your convenience.'},
+        'plumbing': {'name': 'Plumbing', 'image': 'plumbing.png', 'description': 'Quick fixes and full installations by experts.'},
+        'carpentry': {'name': 'Carpentry', 'image': 'carpentry.png', 'description': 'Expert woodwork for home improvements.'},
+        'painting': {'name': 'Painting', 'image': 'painting.png', 'description': 'Freshen up your home with our expert painters.'},
+        'electrician': {'name': 'Electrician', 'image': 'electrician.png', 'description': 'Professional electrical services for all needs.'},
+        'ac_repair': {'name': 'AC Repair', 'image': 'ac_repair.png', 'description': 'Expert AC repairs to keep you cool all year round.'},
     }
 
-    actual_service_name = service_map.get(service_name.lower())
-    if not actual_service_name:
-        raise Http404("Service not found")
+    # Get the service data based on the name
+    service_data = services.get(name)
 
-    service = Service.objects.filter(name=actual_service_name).first()
-    if not service:
-        raise Http404("Service not found in DB")
+    if service_data:
+        return render(request, 'landing_page/service_detail.html', {'service': service_data})
+    else:
+        return render(request, 'landing_page/404.html')  # Return a 404 page if the service is not found
+#/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+def log_base(request):
+    return render(request, template_name='customer_dashboard/log_base.html')
 
-    #  Load subservices associated with this service
-    subservices = SubService.objects.filter(service=service)
-
-    #  Load available workers for this service
-    workers = WorkerProfile.objects.filter(service=service, user__is_available=True)
-
-    return render(request, 'landing_page/service_detail.html', {
-        'service': service,
-        'subservices': subservices,
-        'workers': workers,
-    })
-
-
-
+def log_nav(request):
+    return render(request, template_name='customer_dashboard/log_nav.html')
 @login_required
 def customer_profile(request):
     return render(request, template_name='customer_dashboard/customer_profile.html',context= {'user': request.user})
@@ -170,6 +121,45 @@ def update_profile(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+def cus_blog(request):
+    blogs = Blog.objects.all().order_by('-created_at')
+    return render(request, 'customer_dashboard/cus_blog.html', {'blogs': blogs})
+
+@login_required
+def create_blog(request):
+    if request.method == 'POST':
+        form = BlogForm(request.POST)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            blog.user = request.user
+            blog.save()
+            return redirect('blog')  # Fix the redirect
+    else:
+        form = BlogForm()
+    return render(request, 'customer_dashboard/create_blog.html', {'form': form})
+
+def is_admin(user):
+    return user.is_staff
+
+@user_passes_test(is_admin)
+def admin_response(request, blog_id):
+    blog = get_object_or_404(Blog, blog_id=blog_id)
+
+    if request.method == 'POST':
+        admin_response = request.POST.get('admin_response')
+        contacted = request.POST.get('contacted') == 'on'
+
+        blog.admin_response = admin_response
+        blog.contacted = contacted
+        blog.save()
+        return redirect('blog')
+
+    return render(request, 'customer_dashboard/admin_response.html', {'blog': blog})
+
+def cus_faq(request):
+    return render(request, 'customer_dashboard/cus_faq.html')
+
 ###########################################################################################################################
 def worker_base(request):
     return render(request, template_name='worker_dashboard/log_base.html')
@@ -198,73 +188,3 @@ def logout(request):
     logout(request)
     return redirect('login')
 
-def service_list(request):
-    services = Service.objects.all()
-    return render(request, 'landing_page/service.html', {'services': services})
-
-def service_detail(request, service_name):
-    print(f"DEBUG: service_detail called with: '{service_name}'")
-    
-    service_map = {
-        'home_cleaning': 'Home Cleaning',
-        'plumbing': 'Plumbing', 
-        'carpentry': 'Carpentry',
-        'painting': 'Painting',
-        'electrician': 'Electrician',
-        'ac_repair': 'AC Repair',
-    }
-
-    actual_service_name = service_map.get(service_name, service_name)
-
-    service = Service.objects.filter(name=actual_service_name).first()
-    if not service:
-        from django.http import Http404
-        raise Http404(f"Service '{service_name}' not found.")
-
-    subservices = SubService.objects.filter(service=service)
-    workers = User.objects.filter(user_type='worker', skills=service, is_available=True)
-
-    context = {
-        'service': service,
-        'subservices': subservices,
-        'workers': workers,
-    }
-    return render(request, 'landing_page/service_detail.html', context)
-
-
-@login_required
-def book_service(request, subservice_id):
-    subservice = get_object_or_404(SubService, sub_id=subservice_id)
-
-    if request.method == 'POST':
-        scheduled_date = request.POST.get('scheduled_date')
-        address = request.POST.get('address') or request.user.address
-        worker_id = request.POST.get('worker_id')
-
-        booking = Booking.objects.create(
-            customer=request.user,
-            service=subservice.service,
-            subservice=subservice,
-            scheduled_date=scheduled_date,
-            address=address,
-            worker=User.objects.get(user_id=worker_id) if worker_id else None
-        )
-
-        return redirect('booking_confirmation', booking_id=booking.bk_id)
-
-    # If GET fallback
-    return redirect('service_detail', service_name=subservice.service.name.lower().replace(" ", "_"))
-
-
-@login_required
-def booking_confirmation(request, booking_id):
-    booking = get_object_or_404(Booking, bk_id=booking_id)
-
-    # Assuming price is stored in the subservice model related to booking
-    amount = booking.subservice.price if booking.subservice else 0
-
-    context = {
-        'booking': booking,
-        'amount': amount,
-    }
-    return render(request, 'booking_confirmation.html', context)
