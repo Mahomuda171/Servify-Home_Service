@@ -2,25 +2,142 @@
 {% block body_class %}blur-page{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="card p-4 shadow" style="width: 1000px;">
-        <div class="card-body">
-            <h5 class="card-title">User Information</h5>
-            <br>
-            <p class="card-text"><strong>Username:</strong> {{ user.username }}</p>
-            <p class="card-text"><strong>Email:</strong> {{ user.email }}</p>
-            {% if user.address %}
-            <p class="card-text"><strong>Address:</strong> {{ user.address }}</p>
-            {% else %}
-            <p class="card-text"><strong>Address:</strong> Not provided</p>
-            {% endif %}
-            {% if user.phn_Num %}
-            <p class="card-text"><strong>Contact Number:</strong> {{ user.phn_num }}</p>
-            {% else %}
-            <p class="card-text"><strong>Contact Number:</strong> Not provided</p>
-            {% endif %}
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card profile-card shadow" style="width: 100%; max-width: 1000px; border-radius: 16px; border: none; overflow: hidden;">
+        <!-- Card Header -->
+        <div class="card-header bg-primary text-white py-4" style="border-radius: 16px 16px 0 0; background: linear-gradient(135deg, #4a6cf7 0%, #6a11cb 100%) !important;">
+            <div class="d-flex align-items-center">
+                <div class="profile-icon me-3">
+                    <i class="fas fa-user-circle" style="font-size: 2.5rem;"></i>
+                </div>
+                <div>
+                    <h4 class="card-title mb-0 fw-bold">User Profile</h4>
+                    <p class="mb-0 opacity-75">Your account information</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body p-4">
+            <div class="row">
+                <!-- User Details -->
+                <div class="col-md-8">
+                    <h5 class="section-title mb-4" style="color: #4a6cf7; border-bottom: 2px solid #f0f4ff; padding-bottom: 10px;">
+                        <i class="fas fa-info-circle me-2"></i>Personal Information
+                    </h5>
+
+                    <div class="info-grid">
+                        <div class="info-item d-flex align-items-center mb-4 p-3 rounded" style="background-color: #f8f9ff;">
+                            <div class="info-icon me-3">
+                                <i class="fas fa-user" style="color: #4a6cf7; font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <p class="info-label mb-1 text-muted small">Username</p>
+                                <p class="info-value mb-0 fw-bold">{{ user.username }}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item d-flex align-items-center mb-4 p-3 rounded" style="background-color: #f8f9ff;">
+                            <div class="info-icon me-3">
+                                <i class="fas fa-envelope" style="color: #4a6cf7; font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <p class="info-label mb-1 text-muted small">Email Address</p>
+                                <p class="info-value mb-0 fw-bold">{{ user.email }}</p>
+                            </div>
+                        </div>
+
+                        <div class="info-item d-flex align-items-center mb-4 p-3 rounded" style="background-color: #f8f9ff;">
+                            <div class="info-icon me-3">
+                                <i class="fas fa-map-marker-alt" style="color: #4a6cf7; font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <p class="info-label mb-1 text-muted small">Address</p>
+                                {% if user.address %}
+                                <p class="info-value mb-0 fw-bold">{{ user.address }}</p>
+                                {% else %}
+                                <p class="info-value mb-0 text-muted">Not provided</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="info-item d-flex align-items-center mb-4 p-3 rounded" style="background-color: #f8f9ff;">
+                            <div class="info-icon me-3">
+                                <i class="fas fa-phone" style="color: #4a6cf7; font-size: 1.2rem;"></i>
+                            </div>
+                            <div>
+                                <p class="info-label mb-1 text-muted small">Contact Number</p>
+                                {% if user.phn_Num %}
+                                <p class="info-value mb-0 fw-bold">{{ user.phn_Num }}</p>
+                                {% else %}
+                                <p class="info-value mb-0 text-muted">Not provided</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Panel -->
+                <div class="col-md-4">
+                    <div class="action-panel p-4 rounded" style="background: linear-gradient(135deg, #f8f9ff 0%, #e8edff 100%); border: 1px solid #e1e8ff;">
+                        <h6 class="mb-3 fw-bold" style="color: #4a6cf7;">
+                            <i class="fas fa-cog me-2"></i>Profile Actions
+                        </h6>
+                        <p class="small text-muted mb-4">Keep your profile information up to date for better service.</p>
+
+                        <div class="d-grid">
+                            <a href="{% url 'update_profile' %}" class="btn btn-primary py-2 fw-medium" style="border-radius: 8px; background-color: #4a6cf7; border: none;">
+                                <i class="fas fa-edit me-2"></i>Update Profile
+                            </a>
+                        </div>
+
+                        <div class="mt-3 pt-3 border-top">
+                            <p class="small text-muted mb-2">Last updated</p>
+                            <p class="small fw-medium mb-0">{{ user.date_joined|date:"F j, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <a href="{% url 'update_profile' %}" class="btn btn-danger mt-3">Update</a>
 </div>
+
+<style>
+.profile-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+}
+
+.info-item {
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateX(5px);
+    background-color: #e8edff !important;
+}
+
+.btn-primary:hover {
+    background-color: #3a5bd9 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 108, 247, 0.4);
+    transition: all 0.3s ease;
+}
+
+.section-title {
+    position: relative;
+}
+
+.action-panel {
+    position: sticky;
+    top: 20px;
+}
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}

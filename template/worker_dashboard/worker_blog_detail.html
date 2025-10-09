@@ -1,0 +1,160 @@
+{% extends "worker_dashboard/worker_base.html" %}
+{% load static %}
+{% block body_class %}blur-page{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold text-primary">
+                    <i class="fas fa-blog me-2"></i>Blog Details
+                </h2>
+            </div>
+
+            <!-- Blog Post -->
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h3 class="card-title fw-bold text-dark">{{ blog.title }}</h3>
+                        <span class="badge {% if blog.contacted %}bg-success{% else %}bg-warning{% endif %}">
+                            {% if blog.contacted %}Contacted{% else %}Pending{% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="blog-meta mb-4">
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-user me-2"></i>Posted by {{ blog.user.username }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-clock me-2"></i>{{ blog.created_at|date:"F d, Y - h:i A" }}
+                        </p>
+                    </div>
+                    
+                    <div class="blog-content mb-4">
+                        <h5 class="fw-semibold mb-2 text-dark">Content:</h5>
+                        <p class="card-text">{{ blog.content|linebreaks }}</p>
+                    </div>
+                    
+                    <div class="requirements-section mb-4">
+                        <h5 class="fw-semibold mb-2 text-dark">
+                            <i class="fas fa-tasks me-2 text-warning"></i>Requirements:
+                        </h5>
+                        <div class="p-3 bg-light rounded border">
+                            {{ blog.requirements|linebreaks }}
+                        </div>
+                    </div>
+                    
+                    {% if blog.contact_info %}
+                    <div class="contact-info">
+                        <h5 class="fw-semibold mb-2 text-dark">
+                            <i class="fas fa-phone me-2 text-success"></i>Contact Information:
+                        </h5>
+                        <p class="text-muted">{{ blog.contact_info }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Responses Section -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2"></i>
+                        Responses ({{ blog.responses.count }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Worker Response Form -->
+                    <div class="response-form mb-4 p-3 bg-light rounded">
+                        <h6 class="fw-semibold mb-3 text-dark">
+                            <i class="fas fa-reply me-2 text-primary"></i>Add Your Response as Worker
+                        </h6>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <textarea class="form-control" name="message" rows="4" 
+                                          placeholder="Type your professional response as a worker..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Response
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Responses List -->
+                    <div class="responses-list">
+                        {% for response in blog.responses.all %}
+                        <div class="response-item mb-3 p-3 rounded {% if response.response_type == 'admin' %}bg-admin{% else %}bg-worker{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong class="{% if response.response_type == 'admin' %}text-danger{% else %}text-info{% endif %}">
+                                        {{ response.user.username }}
+                                    </strong>
+                                    <span class="badge {% if response.response_type == 'admin' %}bg-danger{% else %}bg-info{% endif %} ms-2">
+                                        {% if response.response_type == 'admin' %}Admin{% else %}Worker{% endif %}
+                                    </span>
+                                </div>
+                                <small class="text-muted">{{ response.created_at|date:"M d, Y - h:i A" }}</small>
+                            </div>
+                            <p class="mb-0">{{ response.message|linebreaks }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-comments fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">No responses yet. Be the first to respond!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+                <a href="{% url 'worker_blog' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Blog List
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-admin {
+    background-color: #fff5f5;
+    border-left: 4px solid #dc3545;
+}
+
+.bg-worker {
+    background-color: #f0f8ff;
+    border-left: 4px solid #0d6efd;
+}
+
+.response-item {
+    transition: transform 0.2s ease;
+}
+
+.response-item:hover {
+    transform: translateX(5px);
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.form-control:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.15);
+}
+
+.btn {
+    border-radius: 8px;
+}
+</style>
+{% endblock %}

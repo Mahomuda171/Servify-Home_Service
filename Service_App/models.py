@@ -109,7 +109,13 @@ class Payment(models.Model):
     def __str__(self):
         return f"Payment #{self.payment_id} - {self.amount}"
 
+
 class Blog(models.Model):
+    RESPONSE_TYPES = (
+        ('admin', 'Admin Response'),
+        ('worker', 'Worker Response'),
+    )
+
     blog_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=200)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
@@ -118,8 +124,22 @@ class Blog(models.Model):
     contact_info = models.CharField(max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    admin_response = models.TextField(max_length=1000, blank=True)
     contacted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"Blog by {self.user.username} - {self.title}"
+
+
+class BlogResponse(models.Model):
+    response_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE, related_name='responses')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    response_type = models.CharField(max_length=10, choices=Blog.RESPONSE_TYPES)
+    message = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"Response by {self.user.username} on {self.blog.title}"

@@ -17,7 +17,6 @@ urlpatterns = [
     path('service/<str:name>/', home.service_detail, name='service_detail'),  # Detail page for each service
     path('blog/', home.blog, name='blog'),
     path('create_blog/', home.create_blog, name='create_blog'),
-    path('admin/blog/response/<uuid:blog_id>/', home.admin_response, name='admin_blog_response'),
 
     path('log_base/', login_user.log_base, name='log_base'),
     path('log_nav/', login_user.log_nav, name='log_nav'),
@@ -26,16 +25,18 @@ urlpatterns = [
     path('update_profile/', login_user.update_profile, name='update_profile'),
     path('cus_faq/', login_user.cus_faq, name='cus_faq'),
     path('cus_blog/', login_user.cus_blog, name='cus_blog'),
-    path('create_blog/', login_user.create_blog, name='create_blog'),
-    path('admin/blog/response/<uuid:blog_id>/', login_user.admin_response, name='admin_blog_response'),
+    path('customer/create-blog/', login_user.create_blog, name='create_blog'),
+    path('customer/blog/<uuid:blog_id>/', login_user.blog_detail, name='blog_detail'),
 
     path('worker_base/', worker.worker_base, name='worker_base'),
     path('worker_navbar/', worker.worker_navbar, name='worker_navbar'),
     path('worker_profile/', worker.worker_profile, name='worker_profile'),
     path('logout/', worker.logout, name='logout'),
     path('worker_profile_update/', worker.worker_profile_update, name='worker_profile_update'),
+    path('worker_blog/', worker.worker_blog, name='worker_blog'),
+    path('worker/blog/<uuid:blog_id>/', worker.worker_blog_detail, name='worker_blog_detail'),
+    path('w_about/', worker.w_about, name='w_about'),
 
 ]
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,7 +1,7 @@
 # forms.py
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import User
+from .models import User,Blog
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -50,4 +50,15 @@ class WorkerProfileUpdateForm(forms.ModelForm):
             'skills': forms.SelectMultiple(attrs={'class': 'form-control','rows': 3}),
             'experience': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Years of Experience'}),
             'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+
+class BlogForm(forms.ModelForm):
+    class Meta:
+        model = Blog
+        fields = ['title', 'content', 'requirements', 'contact_info']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter blog title'}),
+            'content': forms.Textarea(attrs={'class': 'form-control', 'rows': 4, 'placeholder': 'Enter blog content'}),
+            'requirements': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Describe your requirements'}),
+            'contact_info': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Optional contact information'}),
         }

@@ -1,29 +1,164 @@
 {% extends "base.html" %}
 {% block body_class %}blur-page{% endblock %}
 {% block content %}
-<div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6">
-                <h2 class="text-center mb-4">Sign Up for Home Service</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <div class="text-danger">
-                                    {{ field.errors }}
-                                </div>
-                            {% endif %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <!-- Compact Card -->
+            <div class="card auth-card shadow border-0" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-body p-4">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="auth-icon mb-3">
+                            <div style="width: 60px; height: 60px; background: linear-gradient(135deg, #4a6cf7 0%, #6a11cb 100%); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-user-plus text-white" style="font-size: 1.5rem;"></i>
+                            </div>
                         </div>
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary w-100">Sign Up</button>
-                </form>
-                <p class="mt-3 text-center">
-                    Already have an account? <a href="{% url 'login' %}">Login here</a>
-                </p>
+                        <h3 class="auth-title fw-bold mb-2" style="color: #333;">Create Account</h3>
+                        <p class="text-muted small">Join our home service community</p>
+                    </div>
+
+                    <!-- Form -->
+                    <form method="post" class="auth-form">
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-medium small text-muted mb-2">
+                                    {{ field.label }}
+                                    {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                </label>
+                                <div class="input-group">
+                                    {{ field }}
+                                </div>
+                                {% if field.help_text %}
+                                    <div class="form-text small mt-1">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {% for error in field.errors %}
+                                            <i class="fas fa-exclamation-circle me-1"></i>{{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <!-- Terms Agreement -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <label class="form-check-label small text-muted" for="termsCheck">
+                                I agree to the <a href="#" class="text-primary">Terms</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mb-3" style="border-radius: 8px; background: linear-gradient(135deg, #4a6cf7 0%, #6a11cb 100%); border: none;">
+                            <i class="fas fa-user-plus me-2"></i>Sign Up
+                        </button>
+                    </form>
+
+                    <!-- Login Link -->
+                    <div class="text-center pt-3 border-top">
+                        <p class="mb-0 small text-muted">
+                            Already have an account?
+                            <a href="{% url 'login' %}" class="text-primary fw-medium text-decoration-none">
+                                Login
+                            </a>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<style>
+.auth-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.auth-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #e1e1e1;
+    padding: 10px 12px;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+    height: 42px;
+}
+
+.form-control:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.15);
+}
+
+.form-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+}
+
+.btn-primary {
+    transition: all 0.3s ease;
+    height: 44px;
+    font-size: 0.95rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(74, 108, 247, 0.3);
+}
+
+.auth-title {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #4a6cf7 0%, #6a11cb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.form-check-input:checked {
+    background-color: #4a6cf7;
+    border-color: #4a6cf7;
+}
+
+/* Compact spacing */
+.form-group {
+    margin-bottom: 1rem !important;
+}
+
+.card-body {
+    padding: 2rem !important;
+}
+
+/* Ensure form fields don't stretch too much */
+.input-group {
+    flex-wrap: nowrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    .auth-card {
+        margin: 0.5rem auto;
+    }
+}
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 {% endblock %}

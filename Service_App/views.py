@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect,get_object_or_404
 from .blog_form import BlogForm
-from django.contrib.auth.decorators import login_required,user_passes_test
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, ProfileUpdateForm, WorkerProfileUpdateForm
 from django.contrib.auth import authenticate,logout, login as auth_login
-from .models import Blog
-
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Blog, BlogResponse
+from .models import Blog, BlogResponse
 
 # Home page
 def home(request):
@@ -114,17 +114,21 @@ def update_profile(request):
         form = ProfileUpdateForm(request.POST,request.FILES, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect('log_profile')
+            return redirect('customer_profile')
     else:
         form = ProfileUpdateForm(instance=request.user)
-    return render(request, 'customer_dashboard/profile_form.html', {'form': form})
+    return render(request, 'customer_dashboard/update_profile.html', {'form': form})
 def logout_view(request):
     logout(request)
     return redirect('login')
 
+
+
+
 def cus_blog(request):
     blogs = Blog.objects.all().order_by('-created_at')
     return render(request, 'customer_dashboard/cus_blog.html', {'blogs': blogs})
+
 
 @login_required
 def create_blog(request):
@@ -134,28 +138,35 @@ def create_blog(request):
             blog = form.save(commit=False)
             blog.user = request.user
             blog.save()
-            return redirect('blog')  # Fix the redirect
+            return redirect('cus_blog')
     else:
         form = BlogForm()
     return render(request, 'customer_dashboard/create_blog.html', {'form': form})
 
-def is_admin(user):
-    return user.is_staff
 
-@user_passes_test(is_admin)
-def admin_response(request, blog_id):
+@login_required
+def blog_detail(request, blog_id):
     blog = get_object_or_404(Blog, blog_id=blog_id)
 
     if request.method == 'POST':
-        admin_response = request.POST.get('admin_response')
-        contacted = request.POST.get('contacted') == 'on'
+        message = request.POST.get('message')
 
-        blog.admin_response = admin_response
-        blog.contacted = contacted
-        blog.save()
-        return redirect('blog')
+        # Determine response type based on user type
+        if request.user.is_staff:
+            response_type = 'admin'
+        else:
+            response_type = 'worker'
 
-    return render(request, 'customer_dashboard/admin_response.html', {'blog': blog})
+        if message:
+            BlogResponse.objects.create(
+                blog=blog,
+                user=request.user,
+                response_type=response_type,
+                message=message
+            )
+            return redirect('blog_detail', blog_id=blog_id)
+
+    return render(request, 'customer_dashboard/blog_detail.html', {'blog': blog})
 
 def cus_faq(request):
     return render(request, 'customer_dashboard/cus_faq.html')
@@ -166,10 +177,10 @@ def worker_base(request):
 
 def worker_navbar(request):
     return render(request, template_name='worker_dashboard/log_nav.html')
+
 @login_required
 def worker_profile(request):
     return render(request, template_name='worker_dashboard/worker_profile.html',context= {'user': request.user})
-
 
 @login_required
 def worker_profile_update(request):
@@ -188,3 +199,30 @@ def logout(request):
     logout(request)
     return redirect('login')
 
+
+@login_required
+def worker_blog(request):
+    blogs = Blog.objects.all().order_by('-created_at')
+    return render(request, 'worker_dashboard/worker_blog.html', {'blogs': blogs})
+
+
+# Worker-specific blog detail
+@login_required
+def worker_blog_detail(request, blog_id):
+    blog = get_object_or_404(Blog, blog_id=blog_id)
+
+    if request.method == 'POST':
+        message = request.POST.get('message')
+
+        if message:
+            BlogResponse.objects.create(
+                blog=blog,
+                user=request.user,
+                response_type='worker',
+                message=message
+            )
+            return redirect('worker_blog_detail', blog_id=blog_id)
+
+    return render(request, 'worker_dashboard/worker_blog_detail.html', {'blog': blog})
+def w_about(request):
+    return render(request, 'worker_dashboard/w_about.html')

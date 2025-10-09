@@ -1,0 +1,116 @@
+{% extends "customer_dashboard/log_base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Blog Post -->
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h2 class="card-title fw-bold text-primary">{{ blog.title }}</h2>
+                        <span class="badge {% if blog.contacted %}bg-success{% else %}bg-warning{% endif %}">
+                            {% if blog.contacted %}Contacted{% else %}Pending{% endif %}
+                        </span>
+                    </div>
+                    
+                    <div class="blog-meta mb-4">
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-user me-2"></i>Posted by {{ blog.user.username }}
+                        </p>
+                        <p class="text-muted mb-1">
+                            <i class="fas fa-clock me-2"></i>{{ blog.created_at|date:"F d, Y - h:i A" }}
+                        </p>
+                    </div>
+                    
+                    <div class="blog-content mb-4">
+                        <h5 class="fw-semibold mb-2">Content:</h5>
+                        <p class="card-text">{{ blog.content|linebreaks }}</p>
+                    </div>
+                    
+                    <div class="requirements-section mb-4">
+                        <h5 class="fw-semibold mb-2">Requirements:</h5>
+                        <div class="p-3 bg-light rounded">
+                            {{ blog.requirements|linebreaks }}
+                        </div>
+                    </div>
+                    
+                    {% if blog.contact_info %}
+                    <div class="contact-info">
+                        <h5 class="fw-semibold mb-2">Contact Information:</h5>
+                        <p class="text-muted">{{ blog.contact_info }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Responses Section -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-comments me-2"></i>
+                        Responses ({{ blog.responses.count }})
+                    </h5>
+                </div>
+                    <!-- Responses List -->
+                    <div class="responses-list">
+                        {% for response in blog.responses.all %}
+                        <div class="response-item mb-4 p-3 rounded {% if response.response_type == 'admin' %}bg-admin{% else %}bg-worker{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong class="{% if response.response_type == 'admin' %}text-danger{% else %}text-info{% endif %}">
+                                        {{ response.user.username }}
+                                    </strong>
+                                    <span class="badge {% if response.response_type == 'admin' %}bg-danger{% else %}bg-info{% endif %} ms-2">
+                                        {% if response.response_type == 'admin' %}Admin{% else %}Worker{% endif %}
+                                    </span>
+                                </div>
+                                <small class="text-muted">{{ response.created_at|date:"M d, Y - h:i A" }}</small>
+                            </div>
+                            <p class="mb-0">{{ response.message|linebreaks }}</p>
+                        </div>
+                        {% empty %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-comments fa-2x text-muted mb-3"></i>
+                            <p class="text-muted">No responses yet. Be the first to respond!</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-admin {
+    background-color: #fff5f5;
+    border-left: 4px solid #dc3545;
+}
+
+.bg-worker {
+    background-color: #f0f8ff;
+    border-left: 4px solid #0d6efd;
+}
+
+.response-item {
+    transition: transform 0.2s ease;
+}
+
+.response-item:hover {
+    transform: translateX(5px);
+}
+
+.card {
+    border-radius: 12px;
+    border: none;
+}
+
+.form-control {
+    border-radius: 8px;
+}
+
+.btn {
+    border-radius: 8px;
+}
+</style>
+{% endblock %}

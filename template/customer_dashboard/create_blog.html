@@ -1,42 +1,170 @@
 {% extends "customer_dashboard/log_base.html" %}
 {% block body_class %}blur-page{% endblock %}
 
-
 {% block content %}
+<style>
+/* Custom CSS for the blog post form */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 2.5rem;
+    margin-top: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+.page-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.page-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    border-radius: 2px;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #34495e;
+    margin-bottom: 0.75rem;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+    background-color: white;
+}
+
+.form-text {
+    color: #7f8c8d;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #3498db, #2ecc71);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group:last-of-type {
+    margin-bottom: 2rem;
+}
+
+/* Custom styling for form fields */
+#id_title {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+#id_content, #id_requirements {
+    min-height: 150px;
+    resize: vertical;
+}
+
+#id_contact_info {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .form-card {
+        padding: 1.5rem;
+    }
+
+    .page-title {
+        font-size: 1.75rem;
+    }
+}
+</style>
+
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h2 class="text-center my-4">Write a Blog Post</h2>
-            
-            <form method="post">
-                {% csrf_token %}
-                
-                <div class="mb-3">
-                    <label for="id_title" class="form-label">Blog Title</label>
-                    {{ form.title }}
-                </div>
-                
-                <div class="mb-3">
-                    <label for="id_content" class="form-label">Blog Content</label>
-                    {{ form.content }}
-                </div>
-                
-                <div class="mb-3">
-                    <label for="id_requirements" class="form-label">Your Requirements</label>
-                    {{ form.requirements }}
-                    <div class="form-text">Please describe what services you need in detail</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="id_contact_info" class="form-label">Contact Information (Optional)</label>
-                    {{ form.contact_info }}
-                    <div class="form-text">If you'd like us to contact you in a specific way</div>
-                </div>
-                
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Submit Blog Post</button>
-                </div>
-            </form>
+        <div class="col-md-10">
+            <div class="form-card">
+                <h2 class="page-title text-center">Write a Blog Post</h2>
+                <p class="text-center text-muted mb-4">Share your thoughts and requirements with our community</p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="id_title" class="form-label">Blog Title</label>
+                        {{ form.title }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_content" class="form-label">Blog Content</label>
+                        {{ form.content }}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_requirements" class="form-label">Your Requirements</label>
+                        {{ form.requirements }}
+                        <div class="form-text">Please describe what services you need in detail</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="id_contact_info" class="form-label">Contact Information (Optional)</label>
+                        {{ form.contact_info }}
+                        <div class="form-text">If you'd like us to contact you in a specific way</div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary px-5">Submit Blog Post</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

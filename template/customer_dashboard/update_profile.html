@@ -1,10 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "customer_dashboard/log_base.html" %}
+{% block body_class %}blur-page{% endblock %}
 
-</body>
-</html>
+{% block content %}
+<div class="payment-container d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow" style="width: 500px; border-radius: 12px; border: none;">
+        <div class="card-body">
+            <div class="text-center mb-4">
+                <i class="fas fa-user-edit" style="font-size: 2.5rem; color: #4a6cf7;"></i>
+                <h1 class="payment-title mt-2" style="color: #333; font-weight: 600;">Update Your Profile</h1>
+                <p class="text-muted">Keep your information up to date</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="profile-form">
+                {% csrf_token %}
+
+                {% for field in form %}
+                <div class="form-group mb-3">
+                    <label for="{{ field.id_for_label }}" class="form-label fw-medium">{{ field.label }}</label>
+                    <div class="input-group">
+                        {% if field.name == 'profile_picture' or field.name == 'avatar' %}
+                            <input type="{{ field.field.widget.input_type }}"
+                                   name="{{ field.name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                   {% if field.field.required %}required{% endif %}>
+                        {% else %}
+                            <input type="{{ field.field.widget.input_type }}"
+                                   name="{{ field.name }}"
+                                   id="{{ field.id_for_label }}"
+                                   class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                   value="{{ field.value|default_if_none:'' }}"
+                                   {% if field.field.required %}required{% endif %}>
+                        {% endif %}
+                    </div>
+                    {% if field.help_text %}
+                    <div class="form-text">{{ field.help_text }}</div>
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary py-2" style="background-color: #4a6cf7; border: none; border-radius: 8px; font-weight: 500;">
+                        <i class="fas fa-save me-2"></i>Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-form .form-control {
+    border-radius: 8px;
+    border: 1px solid #e1e1e1;
+    padding: 12px 15px;
+    transition: all 0.3s;
+}
+
+.profile-form .form-control:focus {
+    border-color: #4a6cf7;
+    box-shadow: 0 0 0 0.2rem rgba(74, 108, 247, 0.25);
+}
+
+.profile-form .form-label {
+    color: #555;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.card {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+.btn-primary:hover {
+    background-color: #3a5bd9 !important;
+    transform: translateY(-2px);
+    transition: all 0.3s;
+}
+</style>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %}

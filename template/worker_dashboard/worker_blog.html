@@ -1,0 +1,78 @@
+{% extends "worker_dashboard/worker_base.html" %}
+{% load static %}
+{% block body_class %}blur-page{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold" style="color: #333;">
+            <i class="fas fa-blog me-2 text-primary"></i>Available Blog Posts
+        </h2>
+    </div>
+
+    <div class="row">
+        {% for blog in blogs %}
+        <div class="col-md-6 mb-4">
+            <div class="card blog-card h-100 shadow-sm border-0">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title fw-bold text-primary">{{ blog.title }}</h5>
+                        <div>
+                            <span class="badge {% if blog.contacted %}bg-success{% else %}bg-warning{% endif %} me-1">
+                                {% if blog.contacted %}Contacted{% else %}Pending{% endif %}
+                            </span>
+                            <span class="badge bg-info">
+                                {{ blog.responses.count }} Responses
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <p class="card-text text-muted small mb-2">
+                        <i class="fas fa-user me-1"></i>By {{ blog.user.username }}
+                    </p>
+                    <p class="card-text text-muted small mb-3">
+                        <i class="fas fa-clock me-1"></i>{{ blog.created_at|date:"M d, Y" }}
+                    </p>
+                    
+                    <p class="card-text mb-3">{{ blog.content|truncatewords:20 }}</p>
+                    
+                    <div class="requirements-preview mb-3">
+                        <small class="text-muted fw-semibold">Requirements:</small>
+                        <p class="small text-muted mb-3">{{ blog.requirements|truncatewords:15 }}</p>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <a href="{% url 'worker_blog_detail' blog.blog_id %}" class="btn btn-primary btn-sm">
+                            <i class="fas fa-comment me-1"></i>View & Respond
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-blog fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No Blog Posts Available</h4>
+                <p class="text-muted">No customer has posted any requirements yet.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+.blog-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+}
+
+.badge {
+    font-size: 0.7rem;
+}
+</style>
+{% endblock %}

@@ -70,16 +70,16 @@
       <div class="collapse navbar-collapse" id="navbarContent">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0" style="gap: 20px;">
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">Profile</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'worker_profile' %}active{% endif %}" href="{% url 'worker_profile' %}">Profile</a>
           </li>
           <li class="nav-item">
             <a class="nav-link {% if request.resolver_match.url_name == 'service' %}active{% endif %}" href="{% url 'service' %}">Service</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'about' %}">About</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'w_about' %}active{% endif %}" href="{% url 'w_about' %}">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% if request.resolver_match.url_name == 'blog' %}active{% endif %}" href="{% url 'blog' %}">Blog</a>
+            <a class="nav-link {% if request.resolver_match.url_name == 'worker_blog' %}active{% endif %}" href="{% url 'worker_blog' %}">Blog</a>
           </li>
         </ul>
 
